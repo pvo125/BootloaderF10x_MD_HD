@@ -226,15 +226,15 @@ void Bootloader_upd_firmware(uint16_t countflag){
 			CAN_Transmit_DataFrame(&CAN_Data_TX);
 			
 			if(GPIOC->IDR & GPIO_IDR_IDR9)
-				GPIOC->BSRR=GPIO_BSRR_BS9;
+				GPIOC->BSRR=GPIO_BSRR_BR9;
 			else
 				GPIOC->BSRR=GPIO_BSRR_BS9;
 			
-			SysTick->LOAD=(2500000*6);
+			SysTick->LOAD=(2500000*4);
 			SysTick->VAL=0;
 			while(!(SysTick->CTRL&SysTick_CTRL_COUNTFLAG_Msk)){}
 		}
-		GPIOC->BSRR=GPIO_BSRR_BS7;
+		GPIOC->BSRR=GPIO_BSRR_BR9;
 		
 		Flash_unlock();
 		// Проверка flash на стертость
@@ -327,23 +327,24 @@ int main (void) {
 	count=0;
 	while(*(uint16_t*)(FLAG_STATUS_PAGE+count)!=0xFFFF)		// Перебираем байты пока не дойдем до неписанного поля 0xFF 
 	{
-		count++;
-  	if(count>=1000)
+		count+=2;
+  	if(count>=2048)
 		{
 			count=0;
+			// Для доступа к FLASH->CR	
+			Flash_unlock();
 #ifdef MEDIUM_DENSITY			
 		Flash_page_erase(FLAG_STATUS_PAGE,2);
 #else	
 		Flash_page_erase(FLAG_STATUS_PAGE,1);
 #endif				
 			break;
-			
 		}
-
-		
-	
 	}
-	flag=*(uint16_t*)(FLAG_STATUS_PAGE+count-1);   // значение по адресу (FLAG_STATUS_SECTOR+count) // Читаем значение флага на 1 адресс меньше чистого поля.
+	if(count==0)
+		flag=*(uint16_t*)(FLAG_STATUS_PAGE);   // значение по адресу (FLAG_STATUS_SECTOR) // Читаем значение флага на 1 адресс меньше чистого поля.
+	else
+		flag=*(uint16_t*)(FLAG_STATUS_PAGE+count-2);   // значение по адресу (FLAG_STATUS_SECTOR+count-2) // Читаем значение флага на 1 адресс меньше чистого поля.
 	
 	if(flag==0x00A7)	
 	{		// установлен флаг обновления firmware равный 0xA7

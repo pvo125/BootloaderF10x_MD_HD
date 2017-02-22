@@ -78,9 +78,9 @@ Section Cross References
     main.o(i.Bootloader_upd_firmware) refers to can.o(.bss) for CAN_Data_TX
     main.o(i.Bootloader_upd_firmware) refers to can.o(.data) for size_firmware
     main.o(i.crc32_check) refers to main.o(.constdata) for crc32_table
+    main.o(i.main) refers to main.o(i.Flash_unlock) for Flash_unlock
     main.o(i.main) refers to main.o(i.Flash_page_erase) for Flash_page_erase
     main.o(i.main) refers to main.o(i.crc32_check) for crc32_check
-    main.o(i.main) refers to main.o(i.Flash_unlock) for Flash_unlock
     main.o(i.main) refers to main.o(i.Flash_prog) for Flash_prog
     main.o(i.main) refers to main.o(i.NVIC_SystemReset) for NVIC_SystemReset
     main.o(i.main) refers to core_cm3.o(.emb_text) for __set_MSP
@@ -372,28 +372,28 @@ Image Symbol Table
     .text                                    0x08000258   Section        2  use_no_semi.o(.text)
     .text                                    0x0800025a   Section        0  indicate_semi.o(.text)
     i.Bootloader_upd_firmware                0x0800025c   Section        0  main.o(i.Bootloader_upd_firmware)
-    i.CAN_RXProcess0                         0x08000398   Section        0  can.o(i.CAN_RXProcess0)
-    i.CAN_Receive_IRQHandler                 0x08000548   Section        0  can.o(i.CAN_Receive_IRQHandler)
-    i.CAN_Transmit_DataFrame                 0x0800068c   Section        0  can.o(i.CAN_Transmit_DataFrame)
-    i.Flash_page_erase                       0x0800075c   Section        0  main.o(i.Flash_page_erase)
-    i.Flash_prog                             0x080007d4   Section        0  main.o(i.Flash_prog)
-    i.Flash_unlock                           0x08000840   Section        0  main.o(i.Flash_unlock)
-    i.GPIO_Init                              0x08000858   Section        0  stm32f10x_gpio.o(i.GPIO_Init)
-    i.NVIC_SystemReset                       0x08000a30   Section        0  main.o(i.NVIC_SystemReset)
-    NVIC_SystemReset                         0x08000a31   Thumb Code    26  main.o(i.NVIC_SystemReset)
-    i.RCC_APB2PeriphClockCmd                 0x08000a54   Section        0  stm32f10x_rcc.o(i.RCC_APB2PeriphClockCmd)
-    i.SetSysClock                            0x08000ae0   Section        0  system_stm32f10x.o(i.SetSysClock)
-    SetSysClock                              0x08000ae1   Thumb Code     8  system_stm32f10x.o(i.SetSysClock)
-    i.SetSysClockTo72                        0x08000ae8   Section        0  system_stm32f10x.o(i.SetSysClockTo72)
-    SetSysClockTo72                          0x08000ae9   Thumb Code   212  system_stm32f10x.o(i.SetSysClockTo72)
-    i.SystemInit                             0x08000bc4   Section        0  system_stm32f10x.o(i.SystemInit)
-    i.USB_LP_CAN1_RX0_IRQHandler             0x08000c24   Section        0  stm32f10x_it.o(i.USB_LP_CAN1_RX0_IRQHandler)
-    i.assert_failed                          0x08000c32   Section        0  main.o(i.assert_failed)
-    i.bxCAN_Init                             0x08000c38   Section        0  can.o(i.bxCAN_Init)
-    i.checkflash_erase                       0x08000e4c   Section        0  main.o(i.checkflash_erase)
-    i.crc32_check                            0x08000e68   Section        0  main.o(i.crc32_check)
-    i.main                                   0x08000e98   Section        0  main.o(i.main)
-    .constdata                               0x08000f78   Section     1024  main.o(.constdata)
+    i.CAN_RXProcess0                         0x0800039c   Section        0  can.o(i.CAN_RXProcess0)
+    i.CAN_Receive_IRQHandler                 0x0800055c   Section        0  can.o(i.CAN_Receive_IRQHandler)
+    i.CAN_Transmit_DataFrame                 0x080006a0   Section        0  can.o(i.CAN_Transmit_DataFrame)
+    i.Flash_page_erase                       0x08000770   Section        0  main.o(i.Flash_page_erase)
+    i.Flash_prog                             0x080007e8   Section        0  main.o(i.Flash_prog)
+    i.Flash_unlock                           0x08000854   Section        0  main.o(i.Flash_unlock)
+    i.GPIO_Init                              0x0800086c   Section        0  stm32f10x_gpio.o(i.GPIO_Init)
+    i.NVIC_SystemReset                       0x08000a44   Section        0  main.o(i.NVIC_SystemReset)
+    NVIC_SystemReset                         0x08000a45   Thumb Code    26  main.o(i.NVIC_SystemReset)
+    i.RCC_APB2PeriphClockCmd                 0x08000a68   Section        0  stm32f10x_rcc.o(i.RCC_APB2PeriphClockCmd)
+    i.SetSysClock                            0x08000af4   Section        0  system_stm32f10x.o(i.SetSysClock)
+    SetSysClock                              0x08000af5   Thumb Code     8  system_stm32f10x.o(i.SetSysClock)
+    i.SetSysClockTo72                        0x08000afc   Section        0  system_stm32f10x.o(i.SetSysClockTo72)
+    SetSysClockTo72                          0x08000afd   Thumb Code   212  system_stm32f10x.o(i.SetSysClockTo72)
+    i.SystemInit                             0x08000bd8   Section        0  system_stm32f10x.o(i.SystemInit)
+    i.USB_LP_CAN1_RX0_IRQHandler             0x08000c38   Section        0  stm32f10x_it.o(i.USB_LP_CAN1_RX0_IRQHandler)
+    i.assert_failed                          0x08000c46   Section        0  main.o(i.assert_failed)
+    i.bxCAN_Init                             0x08000c4c   Section        0  can.o(i.bxCAN_Init)
+    i.checkflash_erase                       0x08000e60   Section        0  main.o(i.checkflash_erase)
+    i.crc32_check                            0x08000e7c   Section        0  main.o(i.crc32_check)
+    i.main                                   0x08000eac   Section        0  main.o(i.main)
+    .constdata                               0x08000f9c   Section     1024  main.o(.constdata)
     .data                                    0x20000000   Section        1  main.o(.data)
     .data                                    0x20000004   Section       12  can.o(.data)
     .bss                                     0x20000010   Section       40  can.o(.bss)
@@ -557,25 +557,25 @@ Image Symbol Table
     __I$use$semihosting                      0x08000259   Thumb Code     0  use_no_semi.o(.text)
     __use_no_semihosting_swi                 0x08000259   Thumb Code     2  use_no_semi.o(.text)
     __semihosting_library_function           0x0800025b   Thumb Code     0  indicate_semi.o(.text)
-    Bootloader_upd_firmware                  0x0800025d   Thumb Code   284  main.o(i.Bootloader_upd_firmware)
-    CAN_RXProcess0                           0x08000399   Thumb Code   392  can.o(i.CAN_RXProcess0)
-    CAN_Receive_IRQHandler                   0x08000549   Thumb Code   310  can.o(i.CAN_Receive_IRQHandler)
-    CAN_Transmit_DataFrame                   0x0800068d   Thumb Code   200  can.o(i.CAN_Transmit_DataFrame)
-    Flash_page_erase                         0x0800075d   Thumb Code   116  main.o(i.Flash_page_erase)
-    Flash_prog                               0x080007d5   Thumb Code   104  main.o(i.Flash_prog)
-    Flash_unlock                             0x08000841   Thumb Code    12  main.o(i.Flash_unlock)
-    GPIO_Init                                0x08000859   Thumb Code   378  stm32f10x_gpio.o(i.GPIO_Init)
-    RCC_APB2PeriphClockCmd                   0x08000a55   Thumb Code    70  stm32f10x_rcc.o(i.RCC_APB2PeriphClockCmd)
-    SystemInit                               0x08000bc5   Thumb Code    78  system_stm32f10x.o(i.SystemInit)
-    USB_LP_CAN1_RX0_IRQHandler               0x08000c25   Thumb Code    14  stm32f10x_it.o(i.USB_LP_CAN1_RX0_IRQHandler)
-    assert_failed                            0x08000c33   Thumb Code     4  main.o(i.assert_failed)
-    bxCAN_Init                               0x08000c39   Thumb Code   468  can.o(i.bxCAN_Init)
-    checkflash_erase                         0x08000e4d   Thumb Code    28  main.o(i.checkflash_erase)
-    crc32_check                              0x08000e69   Thumb Code    42  main.o(i.crc32_check)
-    main                                     0x08000e99   Thumb Code   208  main.o(i.main)
-    crc32_table                              0x08000f78   Data        1024  main.o(.constdata)
-    Region$$Table$$Base                      0x08001378   Number         0  anon$$obj.o(Region$$Table)
-    Region$$Table$$Limit                     0x08001398   Number         0  anon$$obj.o(Region$$Table)
+    Bootloader_upd_firmware                  0x0800025d   Thumb Code   286  main.o(i.Bootloader_upd_firmware)
+    CAN_RXProcess0                           0x0800039d   Thumb Code   408  can.o(i.CAN_RXProcess0)
+    CAN_Receive_IRQHandler                   0x0800055d   Thumb Code   310  can.o(i.CAN_Receive_IRQHandler)
+    CAN_Transmit_DataFrame                   0x080006a1   Thumb Code   200  can.o(i.CAN_Transmit_DataFrame)
+    Flash_page_erase                         0x08000771   Thumb Code   116  main.o(i.Flash_page_erase)
+    Flash_prog                               0x080007e9   Thumb Code   104  main.o(i.Flash_prog)
+    Flash_unlock                             0x08000855   Thumb Code    12  main.o(i.Flash_unlock)
+    GPIO_Init                                0x0800086d   Thumb Code   378  stm32f10x_gpio.o(i.GPIO_Init)
+    RCC_APB2PeriphClockCmd                   0x08000a69   Thumb Code    70  stm32f10x_rcc.o(i.RCC_APB2PeriphClockCmd)
+    SystemInit                               0x08000bd9   Thumb Code    78  system_stm32f10x.o(i.SystemInit)
+    USB_LP_CAN1_RX0_IRQHandler               0x08000c39   Thumb Code    14  stm32f10x_it.o(i.USB_LP_CAN1_RX0_IRQHandler)
+    assert_failed                            0x08000c47   Thumb Code     4  main.o(i.assert_failed)
+    bxCAN_Init                               0x08000c4d   Thumb Code   468  can.o(i.bxCAN_Init)
+    checkflash_erase                         0x08000e61   Thumb Code    28  main.o(i.checkflash_erase)
+    crc32_check                              0x08000e7d   Thumb Code    42  main.o(i.crc32_check)
+    main                                     0x08000ead   Thumb Code   222  main.o(i.main)
+    crc32_table                              0x08000f9c   Data        1024  main.o(.constdata)
+    Region$$Table$$Base                      0x0800139c   Number         0  anon$$obj.o(Region$$Table)
+    Region$$Table$$Limit                     0x080013bc   Number         0  anon$$obj.o(Region$$Table)
     get_firmware_size                        0x20000000   Data           1  main.o(.data)
     write_flashflag                          0x20000004   Data           1  can.o(.data)
     size_firmware                            0x20000008   Data           4  can.o(.data)
@@ -593,9 +593,9 @@ Memory Map of the image
 
   Image Entry point : 0x080000ed
 
-  Load Region LR_IROM1 (Base: 0x08000000, Size: 0x000013a8, Max: 0x00020000, ABSOLUTE)
+  Load Region LR_IROM1 (Base: 0x08000000, Size: 0x000013cc, Max: 0x00020000, ABSOLUTE)
 
-    Execution Region ER_IROM1 (Base: 0x08000000, Size: 0x00001398, Max: 0x00020000, ABSOLUTE)
+    Execution Region ER_IROM1 (Base: 0x08000000, Size: 0x000013bc, Max: 0x00020000, ABSOLUTE)
 
     Base Addr    Size         Type   Attr      Idx    E Section Name        Object
 
@@ -655,28 +655,28 @@ Memory Map of the image
     0x08000258   0x00000002   Code   RO          647    .text               c_w.l(use_no_semi.o)
     0x0800025a   0x00000000   Code   RO          649    .text               c_w.l(indicate_semi.o)
     0x0800025a   0x00000002   PAD
-    0x0800025c   0x0000013c   Code   RO          413    i.Bootloader_upd_firmware  main.o
-    0x08000398   0x000001b0   Code   RO          497    i.CAN_RXProcess0    can.o
-    0x08000548   0x00000144   Code   RO          498    i.CAN_Receive_IRQHandler  can.o
-    0x0800068c   0x000000d0   Code   RO          499    i.CAN_Transmit_DataFrame  can.o
-    0x0800075c   0x00000078   Code   RO          414    i.Flash_page_erase  main.o
-    0x080007d4   0x0000006c   Code   RO          415    i.Flash_prog        main.o
-    0x08000840   0x00000018   Code   RO          416    i.Flash_unlock      main.o
-    0x08000858   0x000001d8   Code   RO          101    i.GPIO_Init         stm32f10x_gpio.o
-    0x08000a30   0x00000024   Code   RO          417    i.NVIC_SystemReset  main.o
-    0x08000a54   0x0000008c   Code   RO          217    i.RCC_APB2PeriphClockCmd  stm32f10x_rcc.o
-    0x08000ae0   0x00000008   Code   RO           24    i.SetSysClock       system_stm32f10x.o
-    0x08000ae8   0x000000dc   Code   RO           25    i.SetSysClockTo72   system_stm32f10x.o
-    0x08000bc4   0x00000060   Code   RO           27    i.SystemInit        system_stm32f10x.o
-    0x08000c24   0x0000000e   Code   RO          485    i.USB_LP_CAN1_RX0_IRQHandler  stm32f10x_it.o
-    0x08000c32   0x00000004   Code   RO          418    i.assert_failed     main.o
-    0x08000c36   0x00000002   PAD
-    0x08000c38   0x00000214   Code   RO          501    i.bxCAN_Init        can.o
-    0x08000e4c   0x0000001c   Code   RO          419    i.checkflash_erase  main.o
-    0x08000e68   0x00000030   Code   RO          420    i.crc32_check       main.o
-    0x08000e98   0x000000e0   Code   RO          421    i.main              main.o
-    0x08000f78   0x00000400   Data   RO          422    .constdata          main.o
-    0x08001378   0x00000020   Data   RO          701    Region$$Table       anon$$obj.o
+    0x0800025c   0x00000140   Code   RO          413    i.Bootloader_upd_firmware  main.o
+    0x0800039c   0x000001c0   Code   RO          497    i.CAN_RXProcess0    can.o
+    0x0800055c   0x00000144   Code   RO          498    i.CAN_Receive_IRQHandler  can.o
+    0x080006a0   0x000000d0   Code   RO          499    i.CAN_Transmit_DataFrame  can.o
+    0x08000770   0x00000078   Code   RO          414    i.Flash_page_erase  main.o
+    0x080007e8   0x0000006c   Code   RO          415    i.Flash_prog        main.o
+    0x08000854   0x00000018   Code   RO          416    i.Flash_unlock      main.o
+    0x0800086c   0x000001d8   Code   RO          101    i.GPIO_Init         stm32f10x_gpio.o
+    0x08000a44   0x00000024   Code   RO          417    i.NVIC_SystemReset  main.o
+    0x08000a68   0x0000008c   Code   RO          217    i.RCC_APB2PeriphClockCmd  stm32f10x_rcc.o
+    0x08000af4   0x00000008   Code   RO           24    i.SetSysClock       system_stm32f10x.o
+    0x08000afc   0x000000dc   Code   RO           25    i.SetSysClockTo72   system_stm32f10x.o
+    0x08000bd8   0x00000060   Code   RO           27    i.SystemInit        system_stm32f10x.o
+    0x08000c38   0x0000000e   Code   RO          485    i.USB_LP_CAN1_RX0_IRQHandler  stm32f10x_it.o
+    0x08000c46   0x00000004   Code   RO          418    i.assert_failed     main.o
+    0x08000c4a   0x00000002   PAD
+    0x08000c4c   0x00000214   Code   RO          501    i.bxCAN_Init        can.o
+    0x08000e60   0x0000001c   Code   RO          419    i.checkflash_erase  main.o
+    0x08000e7c   0x00000030   Code   RO          420    i.crc32_check       main.o
+    0x08000eac   0x000000f0   Code   RO          421    i.main              main.o
+    0x08000f9c   0x00000400   Data   RO          422    .constdata          main.o
+    0x0800139c   0x00000020   Data   RO          701    Region$$Table       anon$$obj.o
 
 
     Execution Region RW_IRAM1 (Base: 0x20000000, Size: 0x00000698, Max: 0x00005000, ABSOLUTE)
@@ -699,9 +699,9 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   Object Name
 
-      1496        134          0         12         40      19030   can.o
+      1512        134          0         12         40      19038   can.o
         32          0          0          0          0       4736   core_cm3.o
-       908         84       1024          1          0      21342   main.o
+       928         88       1024          1          0      21350   main.o
         64         26        236          0       1536        756   startup_stm32f10x_md.o
        472         94          0          0          0       2080   stm32f10x_gpio.o
         14          0          0          0          0        433   stm32f10x_it.o
@@ -709,7 +709,7 @@ Image component sizes
        324         26          0          0          0     212201   system_stm32f10x.o
 
     ----------------------------------------------------------------------
-      3452        434       1292         16       1576     261191   Object Totals
+      3488        438       1292         16       1576     261207   Object Totals
          0          0         32          0          0          0   (incl. Generated)
          2          0          0          3          0          0   (incl. Padding)
 
@@ -758,15 +758,15 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-      3724        450       1292         16       1672     260467   Grand Totals
-      3724        450       1292         16       1672     260467   ELF Image Totals
-      3724        450       1292         16          0          0   ROM Totals
+      3760        454       1292         16       1672     260483   Grand Totals
+      3760        454       1292         16       1672     260483   ELF Image Totals
+      3760        454       1292         16          0          0   ROM Totals
 
 ==============================================================================
 
-    Total RO  Size (Code + RO Data)                 5016 (   4.90kB)
+    Total RO  Size (Code + RO Data)                 5052 (   4.93kB)
     Total RW  Size (RW Data + ZI Data)              1688 (   1.65kB)
-    Total ROM Size (Code + RO Data + RW Data)       5032 (   4.91kB)
+    Total ROM Size (Code + RO Data + RW Data)       5068 (   4.95kB)
 
 ==============================================================================
 
