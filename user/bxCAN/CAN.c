@@ -31,6 +31,8 @@ void bxCAN_Init(void){
 	
 	/*Включаем тактирование CAN в модуле RCC*/	
 	RCC->APB1ENR|=RCC_APB1ENR_CAN1EN;
+	RCC->APB2ENR|=RCC_APB2ENR_IOPAEN|RCC_APB2ENR_AFIOEN;
+	
 	/*Настройка выводов CAN  CAN1_TX=PA12   CAN1_RX=PA11  */
 		
 	GPIO_InitStruct.GPIO_Mode=GPIO_Mode_AF_PP;
@@ -218,12 +220,12 @@ void CAN_Receive_IRQHandler(uint8_t FIFONumber){
 *
 */
 /*****************************************************************************************************************
-*													CAN_RXProcess1
+*													CAN_RXProcess0
 ******************************************************************************************************************/
 
 void CAN_RXProcess0(void){
 	uint32_t crc;
-	switch(CAN_Data_RX[1].FMI) {
+	switch(CAN_Data_RX[0].FMI) {
 		case 0://(id=471 data get SET_FIRMWARE_SIZE)
 		//
 		// если получили запрос на обновление 
@@ -233,10 +235,10 @@ void CAN_RXProcess0(void){
 		// * отправить подтверждение по CAN GET_DATA
 		countbytes=0;
 		size_firmware=0;
-		size_firmware=CAN_Data_RX[1].Data[0];
-		size_firmware|=CAN_Data_RX[1].Data[1]<<8;
-		size_firmware|=CAN_Data_RX[1].Data[2]<<16;
-		size_firmware|=CAN_Data_RX[1].Data[3]<<24;
+		size_firmware=CAN_Data_RX[0].Data[0];
+		size_firmware|=CAN_Data_RX[0].Data[1]<<8;
+		size_firmware|=CAN_Data_RX[0].Data[2]<<16;
+		size_firmware|=CAN_Data_RX[0].Data[3]<<24;
 		
 		get_firmware_size=0;
 		
@@ -248,7 +250,7 @@ void CAN_RXProcess0(void){
 		//
 		if((size_firmware-countbytes)>=8)
 			{
-				Flash_prog((uint16_t*)&CAN_Data_RX[1].Data[0],(uint16_t*)(FIRM_WORK_PAGE+countbytes),8);		
+				Flash_prog((uint16_t*)&CAN_Data_RX[0].Data[0],(uint16_t*)(FIRM_WORK_PAGE+countbytes),8);		
 				countbytes+=8;
 				CAN_Data_TX.ID=(NETNAME_INDEX<<8)|0x72;
 				CAN_Data_TX.DLC=2;
@@ -259,14 +261,14 @@ void CAN_RXProcess0(void){
 				if((countbytes%240)==0)
 				{	
 					if(GPIOC->IDR & GPIO_IDR_IDR9)
-						GPIOC->BSRR=GPIO_BSRR_BS9;
-					else
 						GPIOC->BSRR=GPIO_BSRR_BR9;
+					else
+						GPIOC->BSRR=GPIO_BSRR_BS9;
 				}				
 			}
 			else 
 			{
-				Flash_prog((uint16_t*)&CAN_Data_RX[1].Data[0],(uint16_t*)(FIRM_WORK_PAGE+countbytes),(size_firmware-countbytes));
+				Flash_prog((uint16_t*)&CAN_Data_RX[0].Data[0],(uint16_t*)(FIRM_WORK_PAGE+countbytes),(size_firmware-countbytes));
 				countbytes+=(size_firmware-countbytes);
 			}
 			

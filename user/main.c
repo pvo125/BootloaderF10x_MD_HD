@@ -1,12 +1,9 @@
 #include <stm32f10x.h>
 #include "CAN.h"
 
-#ifdef MEDIUM_DENSITY
-	#else
-#endif	
 
 
-#define MEDIUM_DENSITY
+
 
 #define FLASHBOOT_SIZE				0x2800				// 8 kB boot  + 2 kb flag_status
 
@@ -164,7 +161,7 @@ void Flash_prog(uint16_t * src,uint16_t * dst,uint32_t nbyte){
 	FLASH->CR |=FLASH_CR_EOPIE;					// включим прерывание для индикации флага EOP 
 	
 	FLASH->CR |=FLASH_CR_PG;	
-	for(i=0;i<nbyte;i+=2)
+	for(i=0;i<nbyte/2;i++)
 		{
 				*(uint16_t*)(dst+i)=*(uint16_t*)(src+i);
 				while((FLASH->SR & FLASH_SR_EOP)!=FLASH_SR_EOP) {}
@@ -267,6 +264,9 @@ void Bootloader_upd_firmware(uint16_t countflag){
 			flag=0x00A3;	
 			Flash_prog((uint16_t*)&flag,(uint16_t*)(FLAG_STATUS_PAGE+countflag),2);	// 2 байта 
 			// Сделаем RESET 
+			SysTick->LOAD=(2500000*4);
+			SysTick->VAL=0;
+			while(!(SysTick->CTRL&SysTick_CTRL_COUNTFLAG_Msk)){}
 			NVIC_SystemReset();
 
 
@@ -372,7 +372,7 @@ int main (void) {
 #endif					
 				Flash_page_erase(FIRM_WORK_PAGE,temp);
 			 // Запись обновленной прошивки с адреса FIRM_UPD_SECTOR в FIRM_WORK_SECTOR 
-				Flash_prog((uint16_t*)FIRM_UPD_PAGE,(uint16_t*)FIRM_WORK_PAGE,bin_size);	
+				Flash_prog((uint16_t*)FIRM_UPD_PAGE,(uint16_t*)FIRM_WORK_PAGE,(bin_size+4));	
 			 
 			// Запишем в сектор FLAG_STATUS флаг 0x00A3 по адресу  (FLAG_STATUS_PAGE+count) стирать предварительно не будем так как там 0xFFFF
 			flag=0x00A3;	

@@ -4,18 +4,22 @@
 <h1>µVision Build Log</h1>
 <h2>Project:</h2>
 D:\STM32_проекты\BootloaderF10x_MD_HD\MDK-ARM\BootloaderF10x_MD_HD.uvproj
-Project File Date:  02/22/2017
+Project File Date:  02/24/2017
 
 <h2>Output:</h2>
 Build target 'Target 1'
-compiling CAN.c...
+compiling main.c...
+..\user\main.c(282): warning:  #177-D: variable "CAN_Data_TX" was declared but never referenced
+        CANTX_TypeDef CAN_Data_TX;
+..\user\main.c: 1 warning, 0 errors
 linking...
-Program Size: Code=3760 RO-data=1292 RW-data=16 ZI-data=1672  
+Program Size: Code=3808 RO-data=1292 RW-data=16 ZI-data=1672  
 FromELF: creating hex file...
-".\output\BootloaderF10x_MD_HD.axf" - 0 Error(s), 0 Warning(s).
+".\output\BootloaderF10x_MD_HD.axf" - 0 Error(s), 1 Warning(s).
+Load "D:\\STM32_проекты\\BootloaderF10x_MD_HD\\MDK-ARM\\output\\BootloaderF10x_MD_HD.axf" 
+Erase Done.
+Programming Done.
+Verify OK.
 </pre>
 </body>
 </html>
-ode=3744 RO-data=1292 RW-data=16 ZI-data=1672  
-FromELF: creating hex file...
-".\output\BootloaderF10x_MD_HD.axf" - 0 Error(s), 1 Warning(s).

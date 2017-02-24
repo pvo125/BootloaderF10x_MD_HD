@@ -47,7 +47,7 @@ I (..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_gpio.h)(0x58A28329)
 I (..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_pwr.h)(0x58A28329)
 I (..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_spi.h)(0x58A28329)
 I (..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_tim.h)(0x58A28329)
-F (..\user\main.c)(0x58ADA7E5)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\Libraries\CMSIS\CoreSupport -I..\Libraries\CMSIS\DeviceSupport\ST\STM32F10x -I..\Libraries\STM32F10x_StdPeriph_Driver\src -I..\Libraries\STM32F10x_StdPeriph_Driver\inc -I..\user -I..\user\bxCAN-I D:\Keil\ARM\RV31\INC-I D:\Keil\ARM\CMSIS\Include-I D:\Keil\ARM\Inc\ST\STM32F10x-o .\output\main.o --omf_browse .\output\main.crf --depend .\output\main.d)
+F (..\user\main.c)(0x58AFEBE1)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\Libraries\CMSIS\CoreSupport -I..\Libraries\CMSIS\DeviceSupport\ST\STM32F10x -I..\Libraries\STM32F10x_StdPeriph_Driver\src -I..\Libraries\STM32F10x_StdPeriph_Driver\inc -I..\user -I..\user\bxCAN-I D:\Keil\ARM\RV31\INC-I D:\Keil\ARM\CMSIS\Include-I D:\Keil\ARM\Inc\ST\STM32F10x-o .\output\main.o --omf_browse .\output\main.crf --depend .\output\main.d)
 I (..\Libraries\CMSIS\DeviceSupport\ST\STM32F10x\stm32f10x.h)(0x58A28329)
 I (..\Libraries\CMSIS\CoreSupport\core_cm3.h)(0x58A28329)
 I (D:\Keil\ARM\ARMCC\include\stdint.h)(0x51C7D364)
@@ -62,7 +62,7 @@ I (..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_pwr.h)(0x58A28329)
 I (..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_rcc.h)(0x58A28329)
 I (..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_spi.h)(0x58A28329)
 I (..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_tim.h)(0x58A28329)
-I (..\user\bxCAN\CAN.h)(0x58A28329)
+I (..\user\bxCAN\CAN.h)(0x58AEF488)
 F (..\user\stm32f10x_it.c)(0x58AD0413)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\Libraries\CMSIS\CoreSupport -I..\Libraries\CMSIS\DeviceSupport\ST\STM32F10x -I..\Libraries\STM32F10x_StdPeriph_Driver\src -I..\Libraries\STM32F10x_StdPeriph_Driver\inc -I..\user -I..\user\bxCAN-I D:\Keil\ARM\RV31\INC-I D:\Keil\ARM\CMSIS\Include-I D:\Keil\ARM\Inc\ST\STM32F10x-o .\output\stm32f10x_it.o --omf_browse .\output\stm32f10x_it.crf --depend .\output\stm32f10x_it.d)
 I (..\Libraries\CMSIS\DeviceSupport\ST\STM32F10x\stm32f10x.h)(0x58A28329)
 I (..\Libraries\CMSIS\CoreSupport\core_cm3.h)(0x58A28329)
@@ -78,8 +78,8 @@ I (..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_pwr.h)(0x58A28329)
 I (..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_rcc.h)(0x58A28329)
 I (..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_spi.h)(0x58A28329)
 I (..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_tim.h)(0x58A28329)
-I (..\user\bxCAN\CAN.h)(0x58A28329)
-F (..\user\bxCAN\CAN.c)(0x58ADA8F5)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\Libraries\CMSIS\CoreSupport -I..\Libraries\CMSIS\DeviceSupport\ST\STM32F10x -I..\Libraries\STM32F10x_StdPeriph_Driver\src -I..\Libraries\STM32F10x_StdPeriph_Driver\inc -I..\user -I..\user\bxCAN-I D:\Keil\ARM\RV31\INC-I D:\Keil\ARM\CMSIS\Include-I D:\Keil\ARM\Inc\ST\STM32F10x-o .\output\can.o --omf_browse .\output\can.crf --depend .\output\can.d)
+I (..\user\bxCAN\CAN.h)(0x58AEF488)
+F (..\user\bxCAN\CAN.c)(0x58AF11C3)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\Libraries\CMSIS\CoreSupport -I..\Libraries\CMSIS\DeviceSupport\ST\STM32F10x -I..\Libraries\STM32F10x_StdPeriph_Driver\src -I..\Libraries\STM32F10x_StdPeriph_Driver\inc -I..\user -I..\user\bxCAN-I D:\Keil\ARM\RV31\INC-I D:\Keil\ARM\CMSIS\Include-I D:\Keil\ARM\Inc\ST\STM32F10x-o .\output\can.o --omf_browse .\output\can.crf --depend .\output\can.d)
 I (..\Libraries\CMSIS\DeviceSupport\ST\STM32F10x\stm32f10x.h)(0x58A28329)
 I (..\Libraries\CMSIS\CoreSupport\core_cm3.h)(0x58A28329)
 I (D:\Keil\ARM\ARMCC\include\stdint.h)(0x51C7D364)
@@ -94,4 +94,4 @@ I (..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_pwr.h)(0x58A28329)
 I (..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_rcc.h)(0x58A28329)
 I (..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_spi.h)(0x58A28329)
 I (..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_tim.h)(0x58A28329)
-I (..\user\bxCAN\CAN.h)(0x58A28329)
+I (..\user\bxCAN\CAN.h)(0x58AEF488)

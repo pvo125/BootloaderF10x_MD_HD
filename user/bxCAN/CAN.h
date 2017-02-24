@@ -3,6 +3,9 @@
 
 #include <stm32f10x.h>
 
+
+#define MEDIUM_DENSITY
+
 #define RTC_GET 0
 #define RTC_SET 1
 #define TIM_GET 2
