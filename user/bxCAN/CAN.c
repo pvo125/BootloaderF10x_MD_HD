@@ -91,17 +91,23 @@ void bxCAN_Init(void){
 
 	/*ID filters */
   //FOFO0
-																						
+
+#ifdef MEDIUM_DENSITY
 	CAN1->sFilterRegister[0].FR1=0x8E308E20;	//Filters bank 0 fmi 00 ID=0x471 IDE=0 RTR=0	//  SET_FIRMWARE_SIZE 
 																						//							 fmi 01 ID=0x471 IDE=0 RTR=1
 	CAN1->sFilterRegister[0].FR2=0x8E708E60;	//Filters bank 0 fmi 02 ID=0x473 IDE=0 RTR=0	//	SET_DATA_FIRMWARE
 																						//							 fmi 03 ID=0x473 IDE=0 RTR=1	
-	
+#else
+	CAN1->sFilterRegister[0].FR1=0x6E306E20;	//Filters bank 0 fmi 00 ID=0x371 IDE=0 RTR=0	//  SET_FIRMWARE_SIZE 
+																						//							 fmi 01 ID=0x371 IDE=0 RTR=1
+	CAN1->sFilterRegister[0].FR2=0x6E706E60;	//Filters bank 0 fmi 02 ID=0x373 IDE=0 RTR=0	//	SET_DATA_FIRMWARE
+																						//							 fmi 03 ID=0x373 IDE=0 RTR=1	
+#endif
+																
 	CAN1->sFilterRegister[1].FR1=0x10F010E0;	//Filters bank 1 fmi 04 ID=0x087 IDE=0 RTR=0	 
 																						//							 fmi 05 ID=0x087 IDE=0 RTR=1	
 	CAN1->sFilterRegister[1].FR2=0x11101100;	//Filters bank 1 fmi 06 ID=0x088 IDE=0 RTR=0	//  
-																						//							 fmi 07 ID=0x088 IDE=0 RTR=1	// 	GET_NET_NAME																			
-	
+																						//							 fmi 07 ID=0x088 IDE=0 RTR=1	// 	GET_NET_NAME
 	/* Filters activation  */	
 	CAN1->FA1R|=CAN_FFA1R_FFA0|CAN_FFA1R_FFA1;		//
 							
@@ -226,7 +232,8 @@ void CAN_Receive_IRQHandler(uint8_t FIFONumber){
 void CAN_RXProcess0(void){
 	uint32_t crc;
 	switch(CAN_Data_RX[0].FMI) {
-		case 0://(id=471 data get SET_FIRMWARE_SIZE)
+		case 0://(  id=471 data get SET_FIRMWARE_SIZE  for MD
+							//id=371 data get SET_FIRMWARE_SIZE	 for HD)
 		//
 		// если получили запрос на обновление 
 		// * вытащить из CAN_Data_RX[1].Data[0]...CAN_Data_RX[1].Data[3] размер прошивки и записать в size_firmware;
@@ -246,7 +253,8 @@ void CAN_RXProcess0(void){
 		case 1://(id=471 remote )
 		//
 		break;
-		case 2://(id=473 data SET_DATA_FIRMWARE)
+		case 2://(id=473 data SET_DATA_FIRMWARE for MD
+					//  id=373 data SET_DATA_FIRMWARE for HD	)
 		//
 		if((size_firmware-countbytes)>=8)
 			{

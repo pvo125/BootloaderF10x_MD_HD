@@ -209,10 +209,7 @@ void Bootloader_upd_firmware(uint16_t countflag){
 	
 	// отправляем запрос по сети на выдачу прошивки
 		
-	// Настроим SysTick сбросим флаг CLKSOURCE выберем источник тактирования AHB/8
-		SysTick->CTRL &=~SysTick_CTRL_CLKSOURCE_Msk;
-		SysTick->CTRL |=SysTick_CTRL_ENABLE_Msk;
-		
+			
 		get_firmware_size=1;										// взводим флаг и ждем когда master пришдет свой запрос с данными размера прошивки 
 	
 		while(get_firmware_size) 
@@ -279,8 +276,13 @@ int main (void) {
 	uint16_t count;
 	uint8_t temp;
 	
-	CANTX_TypeDef CAN_Data_TX;
+#ifdef MEDIUM_DENSITY
+#else
+	GPIO_InitTypeDef 							GPIO_InitStruct;
+#endif	
+	
 	void(*pApplication)(void);		// указатель на функцию запуска приложения
+	
 	/*
 	0x0800 0000 - 0x0800 1FFF   загрузчик						0 1 2 3 4 5 6 7 page flash for MD ( 0 1 2 3 page flash for HD)
 	0x0800 2000 - 0x0800 27FF		page FLAG_STATUS	2 page for MD  or 1 page for HD	
@@ -323,6 +325,24 @@ int main (void) {
 		}
 		
 		*/
+#ifdef MEDIUM_DENSITY
+	RCC->APB2ENR|=RCC_APB2ENR_IOPCEN;
+	
+#else
+	RCC->APB2ENR|=RCC_APB2ENR_IOPAEN;
+	GPIO_InitStruct.GPIO_Mode=GPIO_Mode_IPU;
+	GPIO_InitStruct.GPIO_Pin=GPIO_Pin_2;
+	GPIO_InitStruct.GPIO_Speed=GPIO_Speed_2MHz;
+	GPIO_Init(GPIOA,&GPIO_InitStruct);
+#endif
+	
+	
+	// Настроим SysTick сбросим флаг CLKSOURCE выберем источник тактирования AHB/8
+		SysTick->CTRL &=~SysTick_CTRL_CLKSOURCE_Msk;
+		SysTick->CTRL |=SysTick_CTRL_ENABLE_Msk;
+		SysTick->LOAD=(2500000*6);
+		
+	
 	// проверим флаг  в секторе FLAG_STATUS во флэш.
 	count=0;
 	while(*(uint16_t*)(FLAG_STATUS_PAGE+count)!=0xFFFF)		// Перебираем байты пока не дойдем до неписанного поля 0xFF 
@@ -341,6 +361,27 @@ int main (void) {
 			break;
 		}
 	}
+/*		If press button PA2 then 
+***********************************************************************************************************************************************************/	
+	SysTick->VAL=0;
+#ifdef MEDIUM_DENSITY
+	if(!(GPIOC->IDR&GPIO_IDR_IDR1))
+	{
+		while(!(SysTick->CTRL&SysTick_CTRL_COUNTFLAG_Msk)){}
+		if(!(GPIOC->IDR & GPIO_IDR_IDR1))
+			Bootloader_upd_firmware(count);	
+	}
+#else
+	if(!(GPIOA->IDR&GPIO_IDR_IDR2))
+	{
+		while(!(SysTick->CTRL&SysTick_CTRL_COUNTFLAG_Msk)){}
+		if(!(GPIOA->IDR & GPIO_IDR_IDR2))
+			Bootloader_upd_firmware(count);	
+	}
+#endif	
+	
+/*
+***********************************************************************************************************************************************************/	
 	if(count==0)
 		flag=*(uint16_t*)(FLAG_STATUS_PAGE);   // значение по адресу (FLAG_STATUS_SECTOR) // Читаем значение флага на 1 адресс меньше чистого поля.
 	else
@@ -362,12 +403,12 @@ int main (void) {
 			// Стирание секторов для записи  в рабочую часть флэш 	
 			
 #ifdef MEDIUM_DENSITY
-		temp=bin_size/1024;
-		if(bin_size%1024)
+		temp=(bin_size+4)/1024;
+		if((bin_size+4)%1024)
 			temp++;
 #else
-		temp=bin_size/2048;
-		if(bin_size%2048)
+		temp=(bin_size+4)/2048;
+		if((bin_size+4)%2048)
 			temp++;
 #endif					
 				Flash_page_erase(FIRM_WORK_PAGE,temp);
