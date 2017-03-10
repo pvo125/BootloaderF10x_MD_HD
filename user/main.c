@@ -11,6 +11,28 @@
 #define FLAG_STATUS_PAGE	0x08002000		// page 1 	
 #define FIRM_WORK_PAGE 		0x08002800		// page 10 for MD or 5 for HD		firmware work base
 
+#ifdef MEDIUM_DENSITY
+		#define LEDPIN						  GPIO_Pin_9	
+		#define LEDPORT						  GPIOC
+		#define BOOT_PIN		  			GPIO_Pin_1
+		#define BOOTBUTTON_PIN		  GPIO_IDR_IDR1
+		#define BOOTBUTTON_PORT		  GPIOC
+		#define RCC_APB2ENR_PORTEN	RCC_APB2ENR_IOPCEN
+		#define  GPIO_BSRR_BRx 			GPIO_BSRR_BR9
+		#define  GPIO_BSRR_BSx 			GPIO_BSRR_BS9
+		#define  GPIO_IDR_IDRX      GPIO_IDR_IDR9
+#else
+		#define LEDPIN							GPIO_Pin_9
+		#define LEDPORT						  GPIOA
+		#define BOOT_PIN		  			GPIO_Pin_2
+		#define BOOTBUTTON_PIN		  GPIO_IDR_IDR2
+		#define BOOTBUTTON_PORT		  GPIOA
+		#define RCC_APB2ENR_PORTEN	RCC_APB2ENR_IOPAEN
+		#define GPIO_BSRR_BRx 			GPIO_BSRR_BR9
+		#define GPIO_BSRR_BSx 			GPIO_BSRR_BS9
+		#define  GPIO_IDR_IDRX      GPIO_IDR_IDR9
+#endif
+
 #ifdef MEDIUM_DENSITY					// if medium density
 	#define FIRM_UPD_PAGE    		0x08010000		// page 64		firmware update base for MD
 #else													// if high density
@@ -197,16 +219,13 @@ void Bootloader_upd_firmware(uint16_t countflag){
 	GPIO_InitTypeDef GPIO_InitStruct;
 	
 		bxCAN_Init();
-		
-		RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC	 ,ENABLE);
 	
-	// PF7 выход push-pull без подтяжки для моргания светодиодом
-		GPIO_InitStruct.GPIO_Pin=GPIO_Pin_9;
+	// PC9 выход push-pull без подтяжки для моргания  зеденым светодиодом (для STM32VLDiscovery) 
+		GPIO_InitStruct.GPIO_Pin=LEDPIN;
 		GPIO_InitStruct.GPIO_Mode=GPIO_Mode_Out_PP;
 		GPIO_InitStruct.GPIO_Speed=GPIO_Speed_2MHz;
-		GPIO_Init(GPIOC,&GPIO_InitStruct);	
-	
-	
+		GPIO_Init(LEDPORT,&GPIO_InitStruct);	
+
 	// отправляем запрос по сети на выдачу прошивки
 		
 			
@@ -219,16 +238,16 @@ void Bootloader_upd_firmware(uint16_t countflag){
 			CAN_Data_TX.Data[0]=NETNAME_INDEX;
 			CAN_Transmit_DataFrame(&CAN_Data_TX);
 			
-			if(GPIOC->IDR & GPIO_IDR_IDR9)
-				GPIOC->BSRR=GPIO_BSRR_BR9;
+			if(LEDPORT->IDR & GPIO_IDR_IDR9)
+				LEDPORT->BSRR=GPIO_BSRR_BRx;
 			else
-				GPIOC->BSRR=GPIO_BSRR_BS9;
+				LEDPORT->BSRR=GPIO_BSRR_BSx;
 			
 			SysTick->LOAD=(2500000*4);
 			SysTick->VAL=0;
 			while(!(SysTick->CTRL&SysTick_CTRL_COUNTFLAG_Msk)){}
 		}
-		GPIOC->BSRR=GPIO_BSRR_BR9;
+		LEDPORT->BSRR=GPIO_BSRR_BRx;
 		
 		Flash_unlock();
 		// Проверка flash на стертость
@@ -276,10 +295,10 @@ int main (void) {
 	uint16_t count;
 	uint8_t temp;
 	
-#ifdef MEDIUM_DENSITY
-#else
+//#ifdef MEDIUM_DENSITY
+//#else
 	GPIO_InitTypeDef 							GPIO_InitStruct;
-#endif	
+//#endif	
 	
 	void(*pApplication)(void);		// указатель на функцию запуска приложения
 	
@@ -325,16 +344,13 @@ int main (void) {
 		}
 		
 		*/
-#ifdef MEDIUM_DENSITY
-	RCC->APB2ENR|=RCC_APB2ENR_IOPCEN;
+	RCC->APB2ENR|=RCC_APB2ENR_PORTEN;
 	
-#else
-	RCC->APB2ENR|=RCC_APB2ENR_IOPAEN;
 	GPIO_InitStruct.GPIO_Mode=GPIO_Mode_IPU;
-	GPIO_InitStruct.GPIO_Pin=GPIO_Pin_2;
+	GPIO_InitStruct.GPIO_Pin=BOOT_PIN;
 	GPIO_InitStruct.GPIO_Speed=GPIO_Speed_2MHz;
-	GPIO_Init(GPIOA,&GPIO_InitStruct);
-#endif
+	GPIO_Init(BOOTBUTTON_PORT,&GPIO_InitStruct);
+
 	
 	
 	// Настроим SysTick сбросим флаг CLKSOURCE выберем источник тактирования AHB/8
@@ -364,22 +380,14 @@ int main (void) {
 /*		If press button PA2 then 
 ***********************************************************************************************************************************************************/	
 	SysTick->VAL=0;
-#ifdef MEDIUM_DENSITY
-	if(!(GPIOC->IDR&GPIO_IDR_IDR1))
+
+	if(!(BOOTBUTTON_PORT->IDR&BOOTBUTTON_PIN))
 	{
 		while(!(SysTick->CTRL&SysTick_CTRL_COUNTFLAG_Msk)){}
-		if(!(GPIOC->IDR & GPIO_IDR_IDR1))
+		if(!(BOOTBUTTON_PORT->IDR & BOOTBUTTON_PIN))
 			Bootloader_upd_firmware(count);	
 	}
-#else
-	if(!(GPIOA->IDR&GPIO_IDR_IDR2))
-	{
-		while(!(SysTick->CTRL&SysTick_CTRL_COUNTFLAG_Msk)){}
-		if(!(GPIOA->IDR & GPIO_IDR_IDR2))
-			Bootloader_upd_firmware(count);	
-	}
-#endif	
-	
+		
 /*
 ***********************************************************************************************************************************************************/	
 	if(count==0)
