@@ -4,7 +4,30 @@
 #include <stm32f10x.h>
 
 
-#define MEDIUM_DENSITY
+//#define MEDIUM_DENSITY
+#ifdef MEDIUM_DENSITY
+		#define LEDPIN						  GPIO_Pin_9	
+		#define LEDPORT						  GPIOC
+		#define BOOT_PIN		  			GPIO_Pin_1
+		#define BOOTBUTTON_PIN		  GPIO_IDR_IDR1
+		#define BOOTBUTTON_PORT		  GPIOC
+		#define RCC_APB2ENR_PORTEN_BOOT	 RCC_APB2ENR_IOPCEN
+		#define RCC_APB2ENR_PORTEN_LED	 RCC_APB2ENR_IOPCEN
+		#define  GPIO_BSRR_BRx 			GPIO_BSRR_BR9
+		#define  GPIO_BSRR_BSx 			GPIO_BSRR_BS9
+		#define  GPIO_IDR_IDRX      GPIO_IDR_IDR9
+#else
+		#define LEDPIN							GPIO_Pin_6
+		#define LEDPORT						  GPIOC
+		#define BOOT_PIN		  			GPIO_Pin_2
+		#define BOOTBUTTON_PIN		  GPIO_IDR_IDR2
+		#define BOOTBUTTON_PORT		  GPIOA
+		#define RCC_APB2ENR_PORTEN_BOOT	 RCC_APB2ENR_IOPAEN
+		#define RCC_APB2ENR_PORTEN_LED	 RCC_APB2ENR_IOPCEN
+		#define GPIO_BSRR_BRx 			GPIO_BSRR_BR6
+		#define GPIO_BSRR_BSx 			GPIO_BSRR_BS6
+		#define GPIO_IDR_IDRX       GPIO_IDR_IDR6
+#endif
 
 #define RTC_GET 0
 #define RTC_SET 1

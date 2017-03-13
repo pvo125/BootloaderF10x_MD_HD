@@ -11,27 +11,7 @@
 #define FLAG_STATUS_PAGE	0x08002000		// page 1 	
 #define FIRM_WORK_PAGE 		0x08002800		// page 10 for MD or 5 for HD		firmware work base
 
-#ifdef MEDIUM_DENSITY
-		#define LEDPIN						  GPIO_Pin_9	
-		#define LEDPORT						  GPIOC
-		#define BOOT_PIN		  			GPIO_Pin_1
-		#define BOOTBUTTON_PIN		  GPIO_IDR_IDR1
-		#define BOOTBUTTON_PORT		  GPIOC
-		#define RCC_APB2ENR_PORTEN	RCC_APB2ENR_IOPCEN
-		#define  GPIO_BSRR_BRx 			GPIO_BSRR_BR9
-		#define  GPIO_BSRR_BSx 			GPIO_BSRR_BS9
-		#define  GPIO_IDR_IDRX      GPIO_IDR_IDR9
-#else
-		#define LEDPIN							GPIO_Pin_9
-		#define LEDPORT						  GPIOA
-		#define BOOT_PIN		  			GPIO_Pin_2
-		#define BOOTBUTTON_PIN		  GPIO_IDR_IDR2
-		#define BOOTBUTTON_PORT		  GPIOA
-		#define RCC_APB2ENR_PORTEN	RCC_APB2ENR_IOPAEN
-		#define GPIO_BSRR_BRx 			GPIO_BSRR_BR9
-		#define GPIO_BSRR_BSx 			GPIO_BSRR_BS9
-		#define  GPIO_IDR_IDRX      GPIO_IDR_IDR9
-#endif
+
 
 #ifdef MEDIUM_DENSITY					// if medium density
 	#define FIRM_UPD_PAGE    		0x08010000		// page 64		firmware update base for MD
@@ -220,7 +200,9 @@ void Bootloader_upd_firmware(uint16_t countflag){
 	
 		bxCAN_Init();
 	
-	// PC9 выход push-pull без подтяжки для моргания  зеденым светодиодом (для STM32VLDiscovery) 
+	// PC9(MEDIUM_DENSITY ) PC6 выход push-pull без подтяжки для моргания  светодиодом 
+		RCC->APB2ENR|=RCC_APB2ENR_PORTEN_LED;
+	
 		GPIO_InitStruct.GPIO_Pin=LEDPIN;
 		GPIO_InitStruct.GPIO_Mode=GPIO_Mode_Out_PP;
 		GPIO_InitStruct.GPIO_Speed=GPIO_Speed_2MHz;
@@ -238,7 +220,7 @@ void Bootloader_upd_firmware(uint16_t countflag){
 			CAN_Data_TX.Data[0]=NETNAME_INDEX;
 			CAN_Transmit_DataFrame(&CAN_Data_TX);
 			
-			if(LEDPORT->IDR & GPIO_IDR_IDR9)
+			if(LEDPORT->IDR & GPIO_IDR_IDRX)
 				LEDPORT->BSRR=GPIO_BSRR_BRx;
 			else
 				LEDPORT->BSRR=GPIO_BSRR_BSx;
@@ -344,7 +326,7 @@ int main (void) {
 		}
 		
 		*/
-	RCC->APB2ENR|=RCC_APB2ENR_PORTEN;
+	RCC->APB2ENR|=RCC_APB2ENR_PORTEN_BOOT;
 	
 	GPIO_InitStruct.GPIO_Mode=GPIO_Mode_IPU;
 	GPIO_InitStruct.GPIO_Pin=BOOT_PIN;
@@ -433,8 +415,15 @@ int main (void) {
 	else if(flag==0x00A3)						 
 	{				// установлен флаг 0x00A3 запуск приложения		
 		// по адресу FIRM_WORK_PAGE+0x1C считаем 4 байта размера прошивки 
-		bin_size=*((uint32_t*)(FIRM_WORK_PAGE+0x1C));	
-		crc=crc32_check((const uint8_t*)FIRM_WORK_PAGE,bin_size);
+		bin_size=*((uint32_t*)(FIRM_WORK_PAGE+0x1C));
+#ifdef MEDIUM_DENSITY		
+		if((bin_size>0)&&(bin_size<0x020000))
+				crc=crc32_check((const uint8_t*)FIRM_WORK_PAGE,bin_size);
+#else
+		if((bin_size>0)&&(bin_size<0x080000))
+			crc=crc32_check((const uint8_t*)FIRM_WORK_PAGE,bin_size);
+#endif			
+			
 		/* Сравниваем полученный crc с рабочего сектора  c тем что лежит FIRM_UPD_SECTOR+bin_size и пришло при обновлении */
 		if(*(uint32_t*)(FIRM_WORK_PAGE+bin_size)==crc)
 			{			// Если прошивка цела делаем запуск pApplication() с рабочего сектора
