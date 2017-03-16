@@ -1,12 +1,7 @@
 #include <stm32f10x.h>
 #include "CAN.h"
 
-
-
-
-
-#define FLASHBOOT_SIZE				0x2800				// 8 kB boot  + 2 kb flag_status
-
+#define FLASHBOOT_SIZE				0x2800		// 8 kB boot  + 2 kb flag_status
 #define FLASHBOOT_PAGE		0x08000000		// page 0
 #define FLAG_STATUS_PAGE	0x08002000		// page 1 	
 #define FIRM_WORK_PAGE 		0x08002800		// page 10 for MD or 5 for HD		firmware work base
@@ -276,13 +271,8 @@ int main (void) {
 	uint16_t flag;
 	uint16_t count;
 	uint8_t temp;
-	
-//#ifdef MEDIUM_DENSITY
-//#else
 	GPIO_InitTypeDef 							GPIO_InitStruct;
-//#endif	
-	
-	void(*pApplication)(void);		// указатель на функцию запуска приложения
+ void(*pApplication)(void);		// указатель на функцию запуска приложения
 	
 	/*
 	0x0800 0000 - 0x0800 1FFF   загрузчик						0 1 2 3 4 5 6 7 page flash for MD ( 0 1 2 3 page flash for HD)
