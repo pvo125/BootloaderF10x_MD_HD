@@ -202,14 +202,13 @@ void Bootloader_upd_firmware(uint16_t countflag){
 		GPIO_InitStruct.GPIO_Mode=GPIO_Mode_Out_PP;
 		GPIO_InitStruct.GPIO_Speed=GPIO_Speed_2MHz;
 		GPIO_Init(LEDPORT,&GPIO_InitStruct);	
-
-	// отправляем запрос по сети на выдачу прошивки
-		
 			
-		get_firmware_size=1;										// взводим флаг и ждем когда master пришдет свой запрос с данными размера прошивки 
+		get_firmware_size=1;						// взводим флаг и ждем когда master пришдет свой запрос с данными размера прошивки 
 	
 		while(get_firmware_size) 
 		{			
+			// отправляем запрос по сети на выдачу прошивки
+			
 			CAN_Data_TX.ID=(NETNAME_INDEX<<8)|0x74;						// 0x174 GET_FIRMWARE			
 			CAN_Data_TX.DLC=1;
 			CAN_Data_TX.Data[0]=NETNAME_INDEX;
@@ -219,13 +218,15 @@ void Bootloader_upd_firmware(uint16_t countflag){
 				LEDPORT->BSRR=GPIO_BSRR_BRx;
 			else
 				LEDPORT->BSRR=GPIO_BSRR_BSx;
-			
+			// Пауза 1,5 секунды
 			SysTick->LOAD=(2500000*4);
 			SysTick->VAL=0;
 			while(!(SysTick->CTRL&SysTick_CTRL_COUNTFLAG_Msk)){}
 		}
-		LEDPORT->BSRR=GPIO_BSRR_BRx;
+		// Если вышли из while значит пришел ответ и в прерывании было принято size_firmware и  установлено get_firmware_size=0
+		LEDPORT->BSRR=GPIO_BSRR_BRx;				// Гасим светодиод
 		
+		// Подготовим флэш для принятия данных и записи
 		Flash_unlock();
 		// Проверка flash на стертость
 		if(checkflash_erase(FIRM_WORK_PAGE,size_firmware))	
@@ -241,14 +242,15 @@ void Bootloader_upd_firmware(uint16_t countflag){
 #endif			
 				Flash_page_erase(FIRM_WORK_PAGE,n);		// Очистим n секторов 
 			}
+		// Отправим  первый запрос на принятия данных. Последующие запросы будем отправлять 
+		//в ISR когда принимаем очередную порцию из 8 байт	
 		CAN_Data_TX.ID=(NETNAME_INDEX<<8)|0x72;
 		CAN_Data_TX.DLC=2;
 		CAN_Data_TX.Data[0]=NETNAME_INDEX;
 		CAN_Data_TX.Data[1]='g';								// GET_DATA!
 		CAN_Transmit_DataFrame(&CAN_Data_TX);
 		
-		//SysTick->LOAD=(2500000);
-		
+	// Ожидаем когда вся прошивка примется по сети и в ISR после проверки crc32 установится 	write_flashflag=1
 		while(write_flashflag==0) 
 		{
 		}
@@ -290,32 +292,39 @@ int main (void) {
 #endif
 */	
 	/*
-		Загрузчик должен проверить флаг в секторе FLAG_STATUS во флэши.  
+		Загрузчик должен проверить флаг в секторе FLAG_STATUS_SECTOR во флэши.  
 		Если установлен в 0x00A7:
 		{	
-			* проверить crc обновленной прошивки во второй половине флэш
+			* по адресу FIRM_UPD_PAGE+0x1C считаем 4 байта размера прошивки bin_size
+			* * проверить crc принятой обновленной прошивки во второй половине флэш сравнить со значениемпо адресу  FIRM_UPD_PAGE+bin_size
 			*	переписать со второй половины флэш в первую(рабочую) 
-			* записать в сектор FLAG_STATUS флаг 0x00A3 
-			* сделать reset для запуска обновленной прошивки из первой половины флэш
+			*  записать в сектор FLAG_STATUS_PAGE  флаг 0x00A3 следующим за считанным  0x00A7(в чистом месте 0xFFFF)
+			* сделать reset для запуска обновленной прошивки из первой половины флэш.
 		}
 		Если установлен в 0x00A3:
 		{
-			* Передвинуть таблицу векторов на FLASHBOOT_SIZE 		(0x8000)
-			* Установить указатель стэка SP на FLASHFIRM_W_BASE (0x080008000)
-			* Запустить функцию (приложение ) по указателю FIRM_WORK_SECTOR+4
+			* По адресу FIRM_WORK_PAGE+0x1C считаем 4 байта размера прошивки bin_size
+			* Проверить crc прошивки и сравнить со значение которое лежит по адресу FIRM_WORK_PAGE+bin_size
+			* если crc верное 
+				* Передвинуть таблицу векторов на FLASH_BASE+FLASHBOOT_SIZE 		(0x08000000+0x2800)
+        * Установить указатель стэка SP значением с адреса FIRM_WORK_PAGE
+        * Запустить функцию (приложение ) по адресу взятому с (FIRM_WORK_PAGE+4)
+			* если crc не верное запустить функцию Bootloader_upd_firmware() которая ожидает прошивку и принимает  ее по CAN сети
+			
 		}
-		Иначе
+		Если флаг 0xFFFF или другое любое значение кроме 0x00A3 0x00A7  также запускается Bootloader_upd_firmware()
 		{	
 			* Настроить периферию для работы CAN модуля.
 			* Ожидать приема прошивки по CAN сети.
-			* Записать принять прошивку по сети во вторую половину флэш
-			*	проверить crc обновленной прошивки во второй половине флэш
-			*	переписать со второй половины флэш в первую(рабочую) 
-			* записать в сектор FLAG_STATUS флаг 0xA3 
+			* Записать принять прошивку по сети в рабочую часть флэш
+			*	проверить crc обновленной прошивки в первой половине флэш
+			* записать в сектор FLAG_STATUS_PAGE флаг 0x00A3 
 			* сделать reset для запуска обновленной прошивки из первой половины флэш
 		}
 		
 		*/
+	
+	/*Настройка вывода BOOT_PIN для принудительного запуска обновления из бутлоадера Bootloader_upd_firmware()	*/
 	RCC->APB2ENR|=RCC_APB2ENR_PORTEN_BOOT;
 	
 	GPIO_InitStruct.GPIO_Mode=GPIO_Mode_IPU;
@@ -349,7 +358,8 @@ int main (void) {
 			break;
 		}
 	}
-/*		If press button PA2 then 
+	
+	/* Если при включении зажата кнопка на BOOT_PIN то после паузы с проверкой на помеху запук функции обновления Bootloader_upd_firmware()
 ***********************************************************************************************************************************************************/	
 	SysTick->VAL=0;
 
@@ -369,7 +379,7 @@ int main (void) {
 	
 	if(flag==0x00A7)	
 	{		// установлен флаг обновления firmware равный 0xA7
-		// по адресу FIRM_UPD_SECTOR+0x1C считаем 4 байта размера прошивки 
+		// по адресу FIRM_UPD_PAGE+0x1C считаем 4 байта размера прошивки 
 		bin_size=*((uint32_t*)(FIRM_UPD_PAGE+0x1C));
 		
 		crc=crc32_check((const uint8_t*)FIRM_UPD_PAGE,bin_size);
@@ -403,9 +413,10 @@ int main (void) {
 		}	
 	}
 	else if(flag==0x00A3)						 
-	{				// установлен флаг 0x00A3 запуск приложения		
+	{	// установлен флаг 0x00A3 запуск приложения		
 		// по адресу FIRM_WORK_PAGE+0x1C считаем 4 байта размера прошивки 
 		bin_size=*((uint32_t*)(FIRM_WORK_PAGE+0x1C));
+		// Дополнительная проверка bin_size чтобы не получить HardFault на функции crc32_check()
 #ifdef MEDIUM_DENSITY		
 		if((bin_size>0)&&(bin_size<0x020000))
 				crc=crc32_check((const uint8_t*)FIRM_WORK_PAGE,bin_size);
@@ -414,10 +425,10 @@ int main (void) {
 			crc=crc32_check((const uint8_t*)FIRM_WORK_PAGE,bin_size);
 #endif			
 			
-		/* Сравниваем полученный crc с рабочего сектора  c тем что лежит FIRM_UPD_SECTOR+bin_size и пришло при обновлении */
+		/* Сравниваем полученный crc с рабочего сектора  c тем что лежит FIRM_WORK_PAGE+bin_size  */
 		if(*(uint32_t*)(FIRM_WORK_PAGE+bin_size)==crc)
-			{			// Если прошивка цела делаем запуск pApplication() с рабочего сектора
-			// Передвинем таблицу векторов на FLASHBOOT_SIZE 	
+			{	// Если прошивка цела делаем запуск pApplication() с рабочего сектора
+				// Передвинем таблицу векторов на FLASHBOOT_SIZE 	
 				SCB->VTOR=FLASH_BASE|FLASHBOOT_SIZE;
 				pApplication=(void(*)(void))*(__IO uint32_t*)(FIRM_WORK_PAGE+4);
 				__set_MSP(*(__IO uint32_t*)FIRM_WORK_PAGE);

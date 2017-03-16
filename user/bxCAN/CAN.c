@@ -48,10 +48,7 @@ void bxCAN_Init(void){
 		
 	/*Настройка NVIC для bxCAN interrupt*/
 	NVIC_SetPriority( USB_LP_CAN1_RX0_IRQn,1);
-		
-
-//			Init mode				//
-
+	
 	//CAN1->MCR|=CAN_MCR_RESET;
 	
 	/*Exit SLEEP mode*/
@@ -60,7 +57,7 @@ void bxCAN_Init(void){
 	CAN1->MCR|=CAN_MCR_INRQ;  /*Initialization Request */
 	while((CAN1->MSR&CAN_MSR_INAK)!=CAN_MSR_INAK)		{}   /*while Initialization Acknowledge*/
 
-	CAN1->MCR|=0x00010000;//CAN_MCR_DBF;	 CAN работает в режиме отладки//CAN останавливается в режиме отладки
+	CAN1->MCR|=0x00010000;						// CAN работает в режиме отладки//CAN останавливается в режиме отладки
 	CAN1->MCR|=CAN_MCR_ABOM;					// Контроллер выходит из состояния «Bus-Off» автоматически 
 	CAN1->MCR&=~CAN_MCR_TTCM;
 	CAN1->MCR&=~CAN_MCR_AWUM;
@@ -84,7 +81,6 @@ void bxCAN_Init(void){
 																																// |-----------------|-------|		
 																																// 								Sample point = 75%	
 	/*Init filters*/
-		
 	CAN1->FM1R|=CAN_FM1R_FBM0|CAN_FM1R_FBM1;												// Filters bank 0 1  mode ID List		
 	CAN1->FS1R&=~(CAN_FS1R_FSC0|CAN_FS1R_FSC1);											// Filters bank 0 1  scale 16 bits	
 	CAN1->FFA1R&=~(CAN_FFA1R_FFA0|CAN_FFA1R_FFA1);									// Filters bank 0 1 FIFO0		
@@ -114,7 +110,7 @@ void bxCAN_Init(void){
 	/*Exit filters init mode*/
 	CAN1->FMR&=	~CAN_FMR_FINIT;
 	
-	/*Разрешение прерываний FIFO0 FIFO1*/
+	/*Разрешение прерываний FIFO0 */
 	CAN1->IER|=CAN_IER_FMPIE0;
 
 //	 Exit Init mode bxCAN	
@@ -250,9 +246,6 @@ void CAN_RXProcess0(void){
 		get_firmware_size=0;
 		
 		break;
-		case 1://(id=471 remote )
-		//
-		break;
 		case 2://(id=473 data SET_DATA_FIRMWARE for MD
 					//  id=373 data SET_DATA_FIRMWARE for HD	)
 		//
@@ -305,9 +298,6 @@ void CAN_RXProcess0(void){
 					CAN_Transmit_DataFrame(&CAN_Data_TX);
 				}
 			}
-		break;
-		case 3://(id=473 remote )
-		//
 		break;
 		case 7://(id=088 remote get net name)
 		//
